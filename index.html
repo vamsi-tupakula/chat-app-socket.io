@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat App</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            height: 100vh;
+        }
+        ul {
+            height: calc(100% - 65px);
+            list-style-type: none;
+            padding: 10px 20px;
+        }
+        ul li {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 10px;
+            font-size: 1.5rem;
+        }
+        ul li:nth-child(2n) {
+            background-color: antiquewhite;
+        }
+        form {
+            height: 65px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            position: fixed;
+            bottom: 0;
+            padding: 8px 0;
+        }
+        input {
+            outline: none;
+            border: 2px solid rgb(75, 70, 70);
+            border-radius: 5px;
+            padding: 10px 0;
+            padding-left: 2%;
+            width: 70%;
+            font-size: 1.2rem;
+        }
+        button {
+            font-size: 1.2rem;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <ul id="msg-box" class="msg-box"></ul>
+    <form>
+        <input 
+        type="text" 
+        name="msg"
+        id="msg"
+        autocomplete="off"
+        placeholder="Enter your message...">
+        <button type="submit" id="btn">Send Message</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        var msg_box = document.getElementById('msg-box');
+        var input = document.getElementById('msg');
+        var btn = document.getElementById('btn');
+
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            if(input.value) {
+                socket.emit("msg",input.value);
+                input.value = ''
+            }
+        })
+
+        socket.on('msg', (msg) => {
+            var elem = document.createElement('li');
+            elem.innerHTML = msg;
+            msg_box.appendChild(elem);
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+    </script>
+</body>
+</html>
